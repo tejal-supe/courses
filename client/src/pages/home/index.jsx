@@ -10,8 +10,15 @@ const Home = () => {
     `,thumbnail:'https://img.freepik.com/free-photo/abstract-autumn-beauty-multi-colored-leaf-vein-pattern-generated-by-ai_188544-9871.jpg'
   }
   return (
-    <div>
-        <div className="text-3xl font-bold underline">Helllo </div>
+    <div className='mt-4 flex flex-wrap justify-center'>
+        
+        <Cards authorName={data.authorName} courseName={data.courseName} createdDate={data.createdDate} courseDescription={data.courseDescription} thumbnail={data.thumbnail}/>
+        <Cards authorName={data.authorName} courseName={data.courseName} createdDate={data.createdDate} courseDescription={data.courseDescription} thumbnail={data.thumbnail}/>
+        <Cards authorName={data.authorName} courseName={data.courseName} createdDate={data.createdDate} courseDescription={data.courseDescription} thumbnail={data.thumbnail}/>
+        <Cards authorName={data.authorName} courseName={data.courseName} createdDate={data.createdDate} courseDescription={data.courseDescription} thumbnail={data.thumbnail}/>
+        <Cards authorName={data.authorName} courseName={data.courseName} createdDate={data.createdDate} courseDescription={data.courseDescription} thumbnail={data.thumbnail}/>
+        <Cards authorName={data.authorName} courseName={data.courseName} createdDate={data.createdDate} courseDescription={data.courseDescription} thumbnail={data.thumbnail}/>
+        <Cards authorName={data.authorName} courseName={data.courseName} createdDate={data.createdDate} courseDescription={data.courseDescription} thumbnail={data.thumbnail}/>
         <Cards authorName={data.authorName} courseName={data.courseName} createdDate={data.createdDate} courseDescription={data.courseDescription} thumbnail={data.thumbnail}/>
     </div>
   )
