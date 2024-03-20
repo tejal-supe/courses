@@ -54,3 +54,12 @@ export const deleteCourse = async(req,res)=>{
         res.json({error})
     }
 }
+
+export const updateCourseById = async (req,res) =>{
+        try {
+            const data = req.body
+            console.log(req.body,'body',data,req)
+        } catch (error) {
+            res.json({error})
+        }
+}
