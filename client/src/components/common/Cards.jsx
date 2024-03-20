@@ -18,13 +18,13 @@ const Cards = ({
       createdDate,
       thumbnail,
     };
-    sessionStorage.setItem("course-selected", JSON.stringify(data));
-    // navigate(`/course-details/${courseName.split(" ").join("-")}`, {
-    //   data: data,
-    // });
-     navigate(`/course-details`, {
-       state: data,
-     });
+    // sessionStorage.setItem("course-selected", JSON.stringify(data));
+    navigate(`/course-details/${courseName.split(" ").join("-")}`, {
+      state: data,
+    });
+    //  navigate(`/course-details`, {
+      //  state: data,
+    //  });
   };
 
   return (

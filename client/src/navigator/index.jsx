@@ -12,7 +12,7 @@ function Navigator(){
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/course-details" element={<CourseDetails />} />
+              <Route path="/course-details/*" element={<CourseDetails />} />
             </Routes>
           </BrowserRouter>
         </Suspense>
