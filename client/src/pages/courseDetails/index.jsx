@@ -1,13 +1,19 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { deleteCourseService } from "../../services/course";
 
 const CourseDetails = () => {
   const location = useLocation();
-  const { thumbnail, courseName, authorName, courseDescription, createdDate } =
+  const { thumbnail, courseName, authorName, courseDescription, createdDate ,id} =
     location.state;
+  const navigate = useNavigate()
 
-    const deleteCourse = () =>{
-      alert("Course deleted!!")
+    const deleteCourse =async () =>{
+      const data = await deleteCourseService(id)
+      if (data) {
+          navigate('/')
+      }
+      console.log(data);
     }
     return (
     <div className="mt-3 bg-white p-4 rounded shadow-sm">

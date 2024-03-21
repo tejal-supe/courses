@@ -36,6 +36,7 @@ const Home = () => {
       course.map((data)=>{
         return(
           <Cards
+            id={data.id}
             authorName={data.author}
             courseName={data.name}
             createdDate={data.creation_date}

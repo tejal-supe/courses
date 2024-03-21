@@ -48,7 +48,6 @@ export const getAllCourses = async (req,res)=>{
             res.json({data:data.rows})
         }
         else{
-
             const {author} = req.query;
             const authorsArray = author.split(',')
             const query = `

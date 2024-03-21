@@ -6,7 +6,7 @@ const Cards = ({
   courseName,
   createdDate,
   courseDescription,
-  thumbnail,
+  thumbnail,id
 }) => {
   const navigate = useNavigate();
 
@@ -17,6 +17,7 @@ const Cards = ({
       courseName,
       createdDate,
       thumbnail,
+      id
     };
     // sessionStorage.setItem("course-selected", JSON.stringify(data));
     navigate(`/course-details/${courseName.split(" ").join("-")}`, {
@@ -29,7 +30,7 @@ const Cards = ({
 
   return (
     <>
-      <div className="w-72 sm:w-72 h-96 border bg-slate-100 rounded-lg shadow-md hover:shadow-lg cursor-pointer mx-5 my-4">
+      <div className="w-72 sm:w-72 h-96 border bg-slate-100 rounded-lg shadow-md hover:shadow-lg cursor-pointer mx-5 my-4" key={id}>
         <div className="w-full h-40">
           <img
             src={thumbnail}

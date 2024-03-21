@@ -5,11 +5,11 @@ export const createTableQuery = `
     name VARCHAR(255) NOT NULL,
     author VARCHAR(255) NOT NULL,
     description TEXT,
-    creation_date DATE 
+    creation_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP 
   )
 `;
 export const addCourseQuery = `
-    INSERT INTO courses (thumbnail,name,author,description,creation_date) VALUES ($1,$2,$3,$4,$5)
+    INSERT INTO courses (thumbnail,name,author,description) VALUES ($1,$2,$3,$4)
 `;
 export const getAllCoursesQuery = `SELECT * FROM  courses`;
 
