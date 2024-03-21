@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Cards from "../../components/common/Cards";
+import { getAllCourseData } from "../../services/course";
 
 const Home = () => {
   const data = {
@@ -14,64 +15,38 @@ const Home = () => {
     thumbnail:
       "https://img.freepik.com/free-photo/abstract-autumn-beauty-multi-colored-leaf-vein-pattern-generated-by-ai_188544-9871.jpg",
   };
+  const [course,setCourse] = useState([]);
+
+  const getCourse = async() =>{
+      try {
+          const data = await getAllCourseData();
+          setCourse(data.data)
+      } catch (error) {
+        console.log(error);
+      }
+  }
+  console.log(course,'course');
+
+  useEffect(()=>{
+    getCourse();
+  },[])
   return (
     <div className="mt-4 flex flex-wrap justify-center">
-      <Cards
-        authorName={data.authorName}
-        courseName={data.courseName}
-        createdDate={data.createdDate}
-        courseDescription={data.courseDescription}
-        thumbnail={data.thumbnail}
-      />
-      <Cards
-        authorName={data.authorName}
-        courseName={data.courseName}
-        createdDate={data.createdDate}
-        courseDescription={data.courseDescription}
-        thumbnail={data.thumbnail}
-      />
-      <Cards
-        authorName={data.authorName}
-        courseName={data.courseName}
-        createdDate={data.createdDate}
-        courseDescription={data.courseDescription}
-        thumbnail={data.thumbnail}
-      />
-      <Cards
-        authorName={data.authorName}
-        courseName={data.courseName}
-        createdDate={data.createdDate}
-        courseDescription={data.courseDescription}
-        thumbnail={data.thumbnail}
-      />
-      <Cards
-        authorName={data.authorName}
-        courseName={data.courseName}
-        createdDate={data.createdDate}
-        courseDescription={data.courseDescription}
-        thumbnail={data.thumbnail}
-      />
-      <Cards
-        authorName={data.authorName}
-        courseName={data.courseName}
-        createdDate={data.createdDate}
-        courseDescription={data.courseDescription}
-        thumbnail={data.thumbnail}
-      />
-      <Cards
-        authorName={data.authorName}
-        courseName={data.courseName}
-        createdDate={data.createdDate}
-        courseDescription={data.courseDescription}
-        thumbnail={data.thumbnail}
-      />
-      <Cards
-        authorName={data.authorName}
-        courseName={data.courseName}
-        createdDate={data.createdDate}
-        courseDescription={data.courseDescription}
-        thumbnail={data.thumbnail}
-      />
+    {
+      course.map((data)=>{
+        return(
+          <Cards
+            authorName={data.author}
+            courseName={data.name}
+            createdDate={data.creation_date}
+            courseDescription={data.description}
+            thumbnail={data.thumbnail}
+          />
+
+        )
+      })
+    }
+     
     </div>
   );
 };

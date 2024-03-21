@@ -9,10 +9,15 @@ export const createTableQuery = `
   )
 `;
 export const addCourseQuery = `
-    INSERT INTO courses (thumbnail, name,author,description,creation_date) VALUES ($1,$2,$3,$4,$5)
-`
-export const getAllCoursesQuery = `SELECT * FROM courses`
-export const deleteCourseQuery = `DELETE FROM courses;`
-export const updateCourseQuery = `UPDATE courses
-SET thumbnail = $1 name = $2 author = $3 description = $4 WHERE id = $5 
+    INSERT INTO courses (thumbnail,name,author,description,creation_date) VALUES ($1,$2,$3,$4,$5)
+`;
+export const getAllCoursesQuery = `SELECT * FROM  courses`;
+
+export const deleteCourseQuery = `DELETE FROM courses WHERE id = $1`;
+
+export const updateCourseQuery = (keys, argKeys, id) => `UPDATE courses
+    SET (${keys}) = (${argKeys}) WHERE id = ${id}`;
+
+export const getCourseByAuthors =(authorsArray) => `
+SELECT * FROM courses WHERE author IN (${authorsArray.map((_, index) => `$${index + 1}`).join(',')})
 `
