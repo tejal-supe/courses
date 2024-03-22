@@ -5,11 +5,13 @@ import { createCoursesTable } from "./connection/config.js";
 import courseRouter from "./routes/index.js";
 
 const app = express()
-const port = process.env.PORT
+const port = process.env.PORT 
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+//create table 
 createCoursesTable();
 
 app.use('/',courseRouter)

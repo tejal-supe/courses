@@ -9,7 +9,7 @@ export const createTableQuery = `
   )
 `;
 export const addCourseQuery = `
-    INSERT INTO courses (thumbnail,name,author,description,creation_date) VALUES ($1,$2,$3,$4,$5)
+    INSERT INTO courses (thumbnail,name,author,description) VALUES ($1,$2,$3,$4)
 `;
 export const getAllCoursesQuery = `SELECT * FROM  courses`;
 

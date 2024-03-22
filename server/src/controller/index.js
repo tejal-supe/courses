@@ -1,88 +1,80 @@
 import { v2 as cloudinary } from 'cloudinary' 
 import fs from "fs"
-import { client } from '../connection/config.js';
+import { pool } from '../connection/config.js';
 import { addCourseQuery, deleteCourseQuery, getAllCoursesQuery, getCourseByAuthors, updateCourseQuery } from '../model/query.js';
 
+//Cloudinary Credentials
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.API_KEY,
   api_secret: process.env.API_SECRET,
 });
 
-
+// Add course controller
 export const addCourse=async(req,res)=>{
     try {
         const {name,author,description} = req.body;
         const image = req.file.filename;
-        console.log('in controller',req.body,image);
-        const result = await cloudinary.uploader.upload(image);
-        console.log(result,'result');
-        const thumbnail = result.url
+        const thumbnail = (await cloudinary.uploader.upload(image)).url; // upload to cloudinary and get the url
         const values = [thumbnail,name,author,description]
-        if(result){
-            console.log('inside resilt');
-            const course = await client.query(addCourseQuery,values)
-            console.log(course,'course');
-            await fs.unlinkSync(req.file.filename)
-            res.json({course})
 
-        }else{
-            res.json({error:"Error in uploadinf"})
+        if(!thumbnail){
+            res.json({error:"Error in uploading the image"})
+            fs.unlinkSync(req.file.filename) // delete the file that is created by the multer diskstorage
         }
-
-        
+        await pool.query(addCourseQuery,values);
+         fs.unlinkSync(req.file.filename) // delete the file that is created by the multer diskstorage
+        res.json({message:"Course Added succesfully"})
     } catch (error) {
-        console.log(error,'errror');
-        res.status(500).json({error});
-    }finally {
-        await client.end()
-     }
-    
+        console.log(error,'error');
+        res.status(500).send(error);
+    }
 }
+
+//get all course and get course by author(s) controller
 export const getAllCourses = async (req,res)=>{
     try {
-        console.log(req.query,'qiery',Object.keys(req.query).length === 0);
-        if(Object.keys(req.query).length === 0){
-            const data= await client.query(getAllCoursesQuery)
-            console.log(data,'data');
-            res.json({data:data.rows})
-        }
-        else{
-
-            const {author} = req.query;
-            const authorsArray = author.split(',')
-            const query = `
+        let query;
+        let queryParams;
+        if (Object.keys(req.query).length === 0) {
+          // If no query parameters, fetch all courses
+          query = getAllCoursesQuery;
+          queryParams = [];
+        } else {
+          // fetch by author(s)
+          const { author } = req.query;
+          const authorsArray = author.split(',');
+          query = `
             SELECT * 
             FROM courses 
             WHERE author IN (${authorsArray.map((_, index) => `$${index + 1}`).join(',')})
           `;
-            const data = await client.query(query, authorsArray)
-            console.log(data,'data');
-            res.json({data:data.rows})
+          queryParams = authorsArray;
         }
+        const data = await pool.query(query, queryParams);
+        res.json({ data: data.rows });
+        
     } catch (error) {
         console.log(error,'errpr');
         res.status(500).json(error)
     }
 }
+// delete course by id controller
 export const deleteCourse = async(req,res)=>{
     try {
         const {id} = req.params;
-console.log(id,'id');
-        const deleted = await client.query(deleteCourseQuery,[id])
-        console.log(deleted,'deleted');
-        // cloudinary.uploader.destroy('sample', function(result) { console.log(result) });
-        res.json({message:"Data is deleted"})
+        await pool.query(deleteCourseQuery,[id])
+        res.json({message:"Course is deleted successfully"})
     } catch (error) {
         console.log(error,'error');
         res.json({error})
-    }finally {
-        await client.end()
-     }
+    }
 }
 
+// update course controller
 export const updateCourseById = async(req,res) =>{
         try {
+            const {id} = req.params
             const data = Object.keys(req.body);
             const values = Object.values(req.body);
             if(req.file){
@@ -91,12 +83,9 @@ export const updateCourseById = async(req,res) =>{
                 values.push(result.url)
             }
             const argKeys = data.map((obj,index) => `$${index+1}`).join(',');   
-            console.log(argKeys,'keyys',data,values);     
-            const id = req.params.id
-            const updated = await client.query(updateCourseQuery(data.join(','),argKeys,id),values)
-            console.log(updated);
+            await pool.query(updateCourseQuery(data.join(','),argKeys,id),values);
             if(req.file){
-                await fs.unlinkSync(req.file.filename)
+                fs.unlinkSync(req.file.filename);
             }
             res.status(200).json({message:"Data updated successfully"})
            
@@ -104,7 +93,5 @@ export const updateCourseById = async(req,res) =>{
             console.log(error);
             res.json({error})
         }
-        finally {
-            await client.end()
-         }
+      
 }
