@@ -1,11 +1,11 @@
-### Courses Assignment
+## Courses Assignment
 
-## Client (Frontend)
+### Client (Frontend)
   - To run the FE part run the command - `npm run dev`
   - It includes the homepage - course cards and search by author(s)
   - To send multiple author(s) in the search enter multiple values seperated by comma
 
-## Server (Backend)
+### Server (Backend)
 Setup (.env file)
  - PORT -> 5000
  - Clodinary Credentials for uploading images - 
@@ -13,9 +13,9 @@ Setup (.env file)
         - On the Dashboard copy the Cloud name , API key and API secret key in the env file
     - Postgresql -
         (With Docker) - Run the command -> 
-       ## docker run --name my-postgres -e POSTGRES_PASSWORD=mysecretpassword -d -p 5432:5432 postgres
+        docker run --name my-postgres -e POSTGRES_PASSWORD=mysecretpassword -d -p 5432:5432 postgres
         Connection String for connecting to the DB  ->
-        ## postgresql://postgres:mysecretpassword@localhost:5432/postgres?sslmode=disable
+         postgresql://postgres:mysecretpassword@localhost:5432/postgres?sslmode=disable
 
         (Without Docker) - Neon Tech
         - Login to https://neon.tech/
@@ -24,10 +24,10 @@ Setup (.env file)
 
    - To run backend run the command - `npm start`
    
-### API (POSTMAN)
-## Add Data - 
+## API (POSTMAN)
+### Add Data - 
  URL - http://localhost:5000/course (POST Request)
     Add the data in the Body -> form-data (as we have image)
-## Update Data 
+### Update Data 
  URL - http://localhost:5000/course/id (PATCH Request)
  Add the data in the Body -> form-data (as we have image)
