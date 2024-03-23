@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import moment from "moment"
 
 const Cards = ({
   authorName,
@@ -34,15 +35,18 @@ const Cards = ({
             className="w-full h-full rounded-t-lg object-cover"
           />
         </div>
-        <div className="py-3 px-3 h-[49%] ">
+        <div className="py-3 px-3 h-[49%] relative">
           <p className="font-bold text-xl tracking-wide">{courseName}</p>
           <p className="font-medium text-gray-400 text-sm ">By {authorName}</p>
           <p className="font-semibold text-sm tracking-wide break-words">
             {courseDescription?.length>160?courseDescription.slice(0, 160):courseDescription}...
           </p>
-          <p className="font-thin text-slate-400 text-sm">
-            Last updated {createdDate}
+          <div className="flex justify-end">
+          <p className="font-thin text-slate-400 text-sm absolute bottom-0 ">
+            Published on {moment(createdDate).format("DD-MM-YYYY")}
           </p>
+
+          </div>
         </div>
         <div className="bg-blue-400 text-center cursor-pointer py-1 text-white h-9 rounded-b-lg" onClick={redirectToDetailsPage}>
           <button >

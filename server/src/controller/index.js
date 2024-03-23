@@ -1,7 +1,7 @@
 import { v2 as cloudinary } from 'cloudinary' 
 import fs from "fs"
 import { pool } from '../connection/config.js';
-import { addCourseQuery, deleteCourseQuery, getAllCoursesQuery, getCourseByAuthors, updateCourseQuery } from '../model/query.js';
+import { addCourseQuery, deleteCourseQuery, getAllCoursesQuery } from '../model/query.js';
 
 //Cloudinary Credentials
 cloudinary.config({
@@ -10,24 +10,29 @@ cloudinary.config({
   api_secret: process.env.API_SECRET,
 });
 
+// Upload image to cloudinary
+async function uploadImage(file) {
+    const result = await cloudinary.uploader.upload(file.filename);
+    fs.unlinkSync(file.filename);
+    return result.url;
+}
+
 // Add course controller
 export const addCourse=async(req,res)=>{
     try {
         const {name,author,description} = req.body;
-        const image = req.file.filename;
-        const thumbnail = (await cloudinary.uploader.upload(image)).url; // upload to cloudinary and get the url
+        const image = req.file;
+        const thumbnail = image ? await uploadImage(image) : null; // get the url
         const values = [thumbnail,name,author,description]
 
         if(!thumbnail){
-            res.json({error:"Error in uploading the image"})
-            fs.unlinkSync(req.file.filename) // delete the file that is created by the multer diskstorage
+            res.json({error:"Missing thumbnail"})
         }
         await pool.query(addCourseQuery,values);
-         fs.unlinkSync(req.file.filename) // delete the file that is created by the multer diskstorage
         res.json({message:"Course Added succesfully"})
     } catch (error) {
         console.log(error,'error');
-        res.status(500).send(error);
+        // res.status(500).send(error);
     }
 }
 
@@ -72,26 +77,35 @@ export const deleteCourse = async(req,res)=>{
 }
 
 // update course controller
-export const updateCourseById = async(req,res) =>{
-        try {
-            const {id} = req.params
-            const data = Object.keys(req.body);
-            const values = Object.values(req.body);
-            if(req.file){
-                const result = await cloudinary.uploader.upload(req.file.filename);
-                data.push('thumbnail')
-                values.push(result.url)
-            }
-            const argKeys = data.map((obj,index) => `$${index+1}`).join(',');   
-            await pool.query(updateCourseQuery(data.join(','),argKeys,id),values);
-            if(req.file){
-                fs.unlinkSync(req.file.filename);
-            }
-            res.status(200).json({message:"Data updated successfully"})
-           
-        } catch (error) {
-            console.log(error);
-            res.json({error})
+export const updateCourseById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { thumbnail } = req.file ? await uploadImage(req.file) : {};
+        const fieldsToUpdate = req.body;
+        const updates = Object.entries(fieldsToUpdate).map(([key, value], index) => {
+            return `${key} = $${index + 1}`;
+        });
+
+        if (thumbnail) {
+            updates.push(`thumbnail = $${updates.length + 1}`);
         }
-      
+
+        const values = Object.values(fieldsToUpdate);
+        if (thumbnail) {
+            values.push(thumbnail);
+        }
+        values.push(id);
+
+        const query = `
+            UPDATE courses
+            SET ${updates.join(', ')}
+            WHERE id = $${values.length}
+        `;
+        
+        await pool.query(query, values);
+        res.status(200).json({ message: "Data updated successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 }

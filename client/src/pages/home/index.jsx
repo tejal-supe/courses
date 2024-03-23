@@ -47,19 +47,25 @@ const Home = () => {
             alt="loading"
           />
         ) : (
-          <>
-            {course.map((data) => {
+          <>{
+            course.length > 0?<>
+ {course.map((data) => {
               return (
                 <Cards
                   authorName={data.author}
                   courseName={data.name}
-                  createdDate={data.creation_date}
+                  createdDate={data.created_at}
                   courseDescription={data.description}
                   thumbnail={data.thumbnail}
                   id={data.id}
                 />
               );
             })}
+            </>:<>
+            <p className="text-bold text-xl">No Data Available</p>
+            </>
+          }
+           
           </>
         )}
       </div>
