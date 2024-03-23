@@ -1,54 +1,69 @@
 import React, { useEffect, useState } from "react";
 import Cards from "../../components/common/Cards";
-import { getAllCourseData } from "../../services/course";
+import {
+  getAllCourseData,
+  getCourseByAuthorService,
+} from "../../services/course";
+import Search from "./Search";
 
 const Home = () => {
-  const data = {
-    authorName: "tejal",
-    courseName: "abc yefk",
-    createdDate: "202020",
-    courseDescription: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
-    molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum
-    numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium
-    optio, eaque rerum! Provident similique accusantium nemo autem. Veritatis
-    `,
-    thumbnail:
-      "https://img.freepik.com/free-photo/abstract-autumn-beauty-multi-colored-leaf-vein-pattern-generated-by-ai_188544-9871.jpg",
-  };
-  const [course,setCourse] = useState([]);
+  const [course, setCourse] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const getCourse = async() =>{
-      try {
-          const data = await getAllCourseData();
-          setCourse(data.data)
-      } catch (error) {
-        console.log(error);
-      }
-  }
-  console.log(course,'course');
-
-  useEffect(()=>{
-    getCourse();
-  },[])
-  return (
-    <div className="mt-4 flex flex-wrap justify-center">
-    {
-      course.map((data)=>{
-        return(
-          <Cards
-            id={data.id}
-            authorName={data.author}
-            courseName={data.name}
-            createdDate={data.creation_date}
-            courseDescription={data.description}
-            thumbnail={data.thumbnail}
-          />
-
-        )
-      })
+  const getCourse = async () => {
+    try {
+      const data = await getAllCourseData();
+      setCourse(data.data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
     }
-     
-    </div>
+  };
+  const getCourseByAuthor = async (authorName) => {
+    try {
+      if (!authorName.length == 0) {
+        const data = await getCourseByAuthorService(authorName);
+        setCourse(data.data);
+        setLoading(false);
+      } else {
+        getCourse();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getCourse();
+  }, []);
+
+  return (
+    <>
+      <Search getCourseByAuthor={getCourseByAuthor} setLoading={setLoading} />
+      <div className="mt-4 flex flex-wrap justify-center">
+        {loading ? (
+          <img
+            src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gif"
+            alt="loading"
+          />
+        ) : (
+          <>
+            {course.map((data) => {
+              return (
+                <Cards
+                  authorName={data.author}
+                  courseName={data.name}
+                  createdDate={data.creation_date}
+                  courseDescription={data.description}
+                  thumbnail={data.thumbnail}
+                  id={data.id}
+                />
+              );
+            })}
+          </>
+        )}
+      </div>
+    </>
   );
 };
 
