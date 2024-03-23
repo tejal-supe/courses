@@ -13,8 +13,8 @@ Setup (.env file)
         - On the Dashboard copy the Cloud name , API key and API secret key in the env file
     - Postgresql -
         (With Docker) - Run the command -> 
-        docker run --name my-postgres -e POSTGRES_PASSWORD=mysecretpassword -d -p 5432:5432 postgres
-        Connection String for connecting to the DB  ->
+        - docker run --name my-postgres -e POSTGRES_PASSWORD=mysecretpassword -d -p 5432:5432 postgres
+        - Connection String for connecting to the DB  ->
          postgresql://postgres:mysecretpassword@localhost:5432/postgres?sslmode=disable
 
         (Without Docker) - Neon Tech
